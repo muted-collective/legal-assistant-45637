@@ -95,7 +95,7 @@ def write_file(file):
     return f'{file.name}'
 
 
-def send_email(To, CC, BCC, Subject, Body): 
+def send_email(To, CC, BCC, Subject, Body, Attachments): 
 
     print('Email Being Sent')
 
@@ -134,7 +134,7 @@ def send_email(To, CC, BCC, Subject, Body):
     # msg.attach(part_2)
 
 
-    if st.session_state.file_uploader is not None:
+    if Attachments is True:
 
         for file in st.session_state.file_uploader:
 

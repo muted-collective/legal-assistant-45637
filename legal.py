@@ -133,6 +133,8 @@ def send_email(To, CC, BCC, Subject, Body, Attachments):
     # part_2= MIMEText(email_to_body, "html")
     # msg.attach(part_2)
 
+    print(Attachments)
+
 
     if Attachments is True:
 
@@ -257,6 +259,7 @@ class EventHandler(AssistantEventHandler):
             
             # while True:
             #     time.sleep(1)
+            
             elif tool.function.name == "export_file":
                 file_data= download_file(**params)
                 tool_outputs.append({"tool_call_id": tool.id, "output": f'File made available for download. Please click the download putton to access your file'})

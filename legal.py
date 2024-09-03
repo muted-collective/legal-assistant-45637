@@ -117,7 +117,7 @@ def send_email(To, CC, BCC, Subject, Body, Attachments):
     print(type(all_recipients))
 
     msg= MIMEMultipart()
-    msg['From']= formataddr(("Breaking Dirt", f"{email_sender}"))
+    msg['From']= formataddr(("Binda Attorneys", f"{email_sender}"))
     msg['To']= ", ".join(email_to)
     msg['Cc']= ", ".join(email_to_cc)
     msg['Bcc']= ", ".join(email_to_bcc)
@@ -128,10 +128,6 @@ def send_email(To, CC, BCC, Subject, Body, Attachments):
     part_1= MIMEText(email_to_body, "plain")   
     msg.attach(part_1)
 
-
-    # Attach body HTML
-    # part_2= MIMEText(email_to_body, "html")
-    # msg.attach(part_2)
 
     print(Attachments)
 
@@ -154,8 +150,8 @@ def send_email(To, CC, BCC, Subject, Body, Attachments):
                 os.remove(copy_file)
 
 
-    smtp_server= 'smtp.gmail.com'
-    smtp_port= 587
+    smtp_server= 'smtp.bindaattorneys.co.za'
+    smtp_port= 25
     context= ssl.create_default_context()
 
     try:

@@ -67,7 +67,7 @@ def send_email(To, CC, BCC, Subject, Body, Attachments):
 
 recipient= 'dkdrabile@gmail.com'
 subject= 'Test'
-Body= 'Hello World Test'
+Body= 'Hello World Tests'
 
 
 send_email(To= recipient, Subject= subject, Body=Body, CC= '', BCC='', Attachments='')

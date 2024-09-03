@@ -70,6 +70,8 @@ def write_file(file):
 
 def send_email(To, CC, BCC, Subject, Body, Attachments): 
 
+    print(To)
+
     email_to= To.split(',')
     email_to_cc= CC.split(',')
     email_to_bcc= BCC.split(',')

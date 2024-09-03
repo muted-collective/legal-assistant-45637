@@ -16,33 +16,6 @@ from email.mime.application import MIMEApplication
 from email.utils import formataddr
 load_dotenv()
 
-# Keys
-
-encryption_key = st.secrets['ENCRYPTION_KEY']
-cipher_suite = Fernet(encryption_key.encode())
-
-
-OPENAI_API_KEY= st.secrets['OPENAI_API_KEY']
-VECTOR_STORE_ID= st.secrets['VECTOR_STORE_ID']
-ASSISTANT_ID= st.secrets['ASSISTANT_ID']
-EMAIL_SENDER= st.secrets['EMAIL_SENDER']
-EMAIL_PASSWORD= st.secrets['EMAIL_PASSWORD']
-
-
-encrypted_secrets= {
-    'OPENAI_API_KEY': OPENAI_API_KEY,
-    'VECTOR_STORE_ID': VECTOR_STORE_ID,
-    'ASSISTANT_ID': ASSISTANT_ID,
-    'EMAIL_SENDER': EMAIL_SENDER,
-    'EMAIL_PASSWORD': EMAIL_PASSWORD
-    }
-
-
-decrypted_secrets = {}
-for key, value in encrypted_secrets.items():
-    print(f"Decrypting {key}: {value}")
-    decrypted_secrets[key] = cipher_suite.decrypt(value.encode()).decode()
-
 
 # New Thread
 
@@ -76,12 +49,12 @@ def find_thread():
     return response
 
 
-openai.api_key= decrypted_secrets['OPENAI_API_KEY']
+openai.api_key= os.getenv('OPENAI_API_KEY')
 client= openai.OpenAI(api_key=openai.api_key)
 model= "gpt-4o"
-assis_id= decrypted_secrets['ASSISTANT_ID']
+assis_id= os.getenv('ASSISTANT_ID')
 thread_id= find_thread()
-vector_id= decrypted_secrets['VECTOR_STORE_ID']
+vector_id= os.getenv('VECTOR_STORE_ID')
 
 
 
@@ -97,15 +70,14 @@ def write_file(file):
 
 def send_email(To, CC, BCC, Subject, Body, Attachments): 
 
-
     email_to= To.split(',')
     email_to_cc= CC.split(',')
     email_to_bcc= BCC.split(',')
     email_to_subject= Subject
     email_to_body= f""" {Body} """
 
-    email_sender= decrypted_secrets['EMAIL_SENDER']
-    email_password= decrypted_secrets['EMAIL_PASSWORD']
+    email_sender= os.getenv('EMAIL_SENDER')
+    email_password= os.getenv('EMAIL_PASSWORD')
 
     if not email_password:
         raise ValueError('EMAIL_PASSWORD environment variable not set')

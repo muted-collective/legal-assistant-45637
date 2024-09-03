@@ -1,6 +1,6 @@
 import openai
 import streamlit as st
-from dotenv import find_dotenv, load_dotenv
+from dotenv import load_dotenv
 from os.path import basename
 import time
 import re

@@ -1,3 +1,5 @@
 .env
 thread_id.txt
 keys.py
+email_outlook.py
+test_legal.py

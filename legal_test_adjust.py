@@ -38,7 +38,7 @@ cipher_suite = Fernet(encryption_key.encode())
 OPENAI_API_KEY_dec= st.secrets['OPENAI_API_KEY']
 VECTOR_STORE_ID_dec= st.secrets['VECTOR_STORE_ID']
 ASSISTANT_ID_dec= st.secrets['ASSISTANT_ID']
-SERVICE_ACCOUNT_dec= st.secrets['FIREBASE_SERVICE_ACCOUNT_KEY_BASE64']
+SERVICE_ACCOUNT_dec= st.secrets['SERVICE_ACCOUNT']
 
 
 encrypted_secrets= {

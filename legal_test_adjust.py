@@ -26,8 +26,8 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 VECTOR_STORE_ID = os.getenv('VECTOR_STORE_ID')
 ASSISTANT_ID = os.getenv('ASSISTANT_ID')
-EMAIL_SENDER = os.getenv('EMAIL_SENDER')
-EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
+# EMAIL_SENDER = os.getenv('EMAIL_SENDER')
+# EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 SERVICE_ACCOUNT= os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY_BASE64')
 
 
@@ -40,8 +40,8 @@ cipher_suite = Fernet(encryption_key.encode())
 OPENAI_API_KEY_dec= st.secrets['OPENAI_API_KEY']
 VECTOR_STORE_ID_dec= st.secrets['VECTOR_STORE_ID']
 ASSISTANT_ID_dec= st.secrets['ASSISTANT_ID']
-EMAIL_SENDER_dec= st.secrets['EMAIL_SENDER']
-EMAIL_PASSWORD_dec= st.secrets['EMAIL_PASSWORD']
+# EMAIL_SENDER_dec= st.secrets['EMAIL_SENDER']
+# EMAIL_PASSWORD_dec= st.secrets['EMAIL_PASSWORD']
 SERVICE_ACCOUNT_dec= st.secrets['FIREBASE_SERVICE_ACCOUNT_KEY_BASE64']
 
 
@@ -49,8 +49,6 @@ encrypted_secrets= {
     'OPENAI_API_KEY': OPENAI_API_KEY_dec,
     'VECTOR_STORE_ID': VECTOR_STORE_ID_dec,
     'ASSISTANT_ID': ASSISTANT_ID_dec,
-    'EMAIL_SENDER': EMAIL_SENDER_dec,
-    'EMAIL_PASSWORD': EMAIL_PASSWORD_dec,
     'SERVICE_ACCOUNT': SERVICE_ACCOUNT_dec
     }
 
@@ -65,8 +63,8 @@ for key, value in encrypted_secrets.items():
 OPENAI_API_KEY= decrypted_secrets['OPENAI_API_KEY'] 
 VECTOR_STORE_ID= decrypted_secrets['VECTOR_STORE_ID']
 ASSISTANT_ID= decrypted_secrets['ASSISTANT_ID']
-EMAIL_SENDER= decrypted_secrets['EMAIL_SENDER']
-EMAIL_PASSWORD= decrypted_secrets['EMAIL_PASSWORD'] 
+# EMAIL_SENDER= decrypted_secrets['EMAIL_SENDER']
+# EMAIL_PASSWORD= decrypted_secrets['EMAIL_PASSWORD'] 
 SERVICE_ACCOUNT= decrypted_secrets['SERVICE_ACCOUNT']
 
 

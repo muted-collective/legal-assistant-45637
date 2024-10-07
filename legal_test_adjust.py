@@ -23,10 +23,10 @@ from firebase_admin import credentials, firestore
 load_dotenv()
 
 # Test Keys
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-VECTOR_STORE_ID = os.getenv('VECTOR_STORE_ID')
-ASSISTANT_ID = os.getenv('ASSISTANT_ID')
-SERVICE_ACCOUNT= os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY_BASE64')
+# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+# VECTOR_STORE_ID = os.getenv('VECTOR_STORE_ID')
+# ASSISTANT_ID = os.getenv('ASSISTANT_ID')
+# SERVICE_ACCOUNT= os.getenv('FIREBASE_SERVICE_ACCOUNT_KEY_BASE64')
 
 
 # Hidden Keys

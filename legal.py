@@ -14,6 +14,7 @@ from email.mime.multipart import MIMEMultipart
 from cryptography.fernet import Fernet
 from email.mime.application import MIMEApplication
 from email.utils import formataddr
+
 load_dotenv()
 
 # Keys
@@ -95,76 +96,79 @@ def write_file(file):
     return f'{file.name}'
 
 
-def send_email(To, CC, BCC, Subject, Body, Attachments): 
+# def send_email(To, CC, BCC, Subject, Body, Attachments): 
 
 
-    email_to= To.split(',')
-    email_to_cc= CC.split(',')
-    email_to_bcc= BCC.split(',')
-    email_to_subject= Subject
-    email_to_body= f""" {Body} """
+#     email_to= To.split(',')
+#     email_to_cc= CC.split(',')
+#     email_to_bcc= BCC.split(',')
+#     email_to_subject= Subject
+#     email_to_body= f""" {Body} """
 
-    email_sender= decrypted_secrets['EMAIL_SENDER']
-    email_password= decrypted_secrets['EMAIL_PASSWORD']
+#     email_sender= decrypted_secrets['EMAIL_SENDER']
+#     email_password= decrypted_secrets['EMAIL_PASSWORD']
 
-    if not email_password:
-        raise ValueError('EMAIL_PASSWORD environment variable not set')
+#     print(email_sender)
+#     print(email_password)
 
-    all_recipients= email_to + email_to_cc + email_to_bcc
+#     if not email_password:
+#         raise ValueError('EMAIL_PASSWORD environment variable not set')
 
-    print(all_recipients)
-    print(type(all_recipients))
+#     all_recipients= email_to + email_to_cc + email_to_bcc
 
-    msg= MIMEMultipart()
-    msg['From']= formataddr(("Andile Vilakazi", f"{email_sender}"))
-    msg['To']= ", ".join(email_to)
-    msg['Cc']= ", ".join(email_to_cc)
-    msg['Bcc']= ", ".join(email_to_bcc)
-    msg['Subject']= email_to_subject
+#     print(all_recipients)
+#     print(type(all_recipients))
 
-
-    # Attach body text
-    part_1= MIMEText(email_to_body, "plain")   
-    msg.attach(part_1)
+#     msg= MIMEMultipart()
+#     msg['From']= formataddr(("Andile Vilakazi", f"{email_sender}"))
+#     msg['To']= ", ".join(email_to)
+#     msg['Cc']= ", ".join(email_to_cc)
+#     msg['Bcc']= ", ".join(email_to_bcc)
+#     msg['Subject']= email_to_subject
 
 
-    if Attachments == 'True':
+#     # Attach body text
+#     part_1= MIMEText(email_to_body, "plain")   
+#     msg.attach(part_1)
 
-        for file in st.session_state.file_uploader:
 
-            copy_file= write_file(file)
+#     if Attachments == 'True':
 
-            with open(copy_file, "rb") as f:
+#         for file in st.session_state.file_uploader:
+
+#             copy_file= write_file(file)
+
+#             with open(copy_file, "rb") as f:
                 
-                part= MIMEApplication(f.read(), Name= os.path.basename(copy_file))
-                part['Content-Disposition']= f'attachment; filename= "{os.path.basename(copy_file)}"'.format(basename(copy_file))
+#                 part= MIMEApplication(f.read(), Name= os.path.basename(copy_file))
+#                 part['Content-Disposition']= f'attachment; filename= "{os.path.basename(copy_file)}"'.format(basename(copy_file))
         
-                # Attach files
-                msg.attach(part)
+#                 # Attach files
+#                 msg.attach(part)
 
-            if os.path.exists(copy_file):
-                os.remove(copy_file)
+#             if os.path.exists(copy_file):
+#                 os.remove(copy_file)
 
 
-    smtp_server= 'smtp.bindaattorneys.co.za'
-    smtp_port= 25
-    context= ssl.create_default_context()
+#     smtp_server= 'smtp.bindaattorneys.co.za'
+#     smtp_port= 25
+#     context= ssl.create_default_context()
 
-    try:
+#     try:
 
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls(context=context)
-            server.login(email_sender, email_password)
-            server.sendmail(from_addr= email_sender, to_addrs= all_recipients, msg= msg.as_string())
+#         with smtplib.SMTP(smtp_server, smtp_port) as server:
+#             server.starttls(context=context)
+#             server.login(email_sender, email_password)
+#             server.sendmail(from_addr= email_sender, to_addrs= all_recipients, msg= msg.as_string())
 
-            success_message= f'Email succesfully sent to {all_recipients}'
+#             success_message= f'Email succesfully sent to {all_recipients}'
 
-    except Exception as e:
-        success_message= f'Failure to send email: {e}'
+#     except Exception as e:
+#         success_message= f'Failure to send email: {e}'
 
-    print(success_message)
+#     print(success_message)
 
-    return success_message
+#     return success_message
 
 
 # Export text file
@@ -187,25 +191,6 @@ def download_file(file_data):
 
 
 list_tools= [{
-            "type": "function",
-            "function": {
-                "name": "send_email",
-                "description": "Assist users business with their email function by drafting a body, subjects, adding attachments where necessary and including recipients to emails. Then confirm user inputs before sending  drafted emails to the listed recipients",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "To":{"type": "string", "description": "Obtain the email addresses of all recipients the user wants to include for their email. e.g janedoe@gmail.com, johndoe@xyz.co.za, yanjoe@hotmail.org"},
-                        "Subject":{"type": "string", "description": "Assist the users with drafting and crafting a professional email subject line to be used in business. Be sure to ask users to confirm the text and allow as many revisions as is required and include formatting and spacing. e.g. Financials Report Summary"},
-                        "CC":{"type": "string", "description": "Obtain the email addresses of all recipients the user wants to include as a cc. e.g janedoe@gmail.com, johndoe@xyz.co.za, yanjoe@hotmail.org"},
-                        "BCC":{"type": "string", "description": "Obtain the email addresses of all recipients the user wants to include as a bcc. e.g janedoe@gmail.com, johndoe@xyz.co.za, yanjoe@hotmail.org"},
-                        "Body":{"type": "string", "description": "Assist the users with drafting and crafting the body of a professional email to be used in business. Be sure to ask users to confirm the text and allow as many revisions as is required and include formatting and spacing. e.g. Good day Mr Sam, I trust this email finds you well. Thank you for meeting with me to discuss the financials for the year. I do think if we consider implementing the revenue strategy we can make great progress. Kindly find attached my summarised report"},
-                        "Attachments":{"type": "boolean", "enum": ["True", "False"], "description": "If the users explicitly state that they want attachments to be uploaded your input is True. If the users do not explicity state they want attachments, your default response is always False. Please keep your default response as False unless users request documents to be attached."}
-                        },
-                        "required": ["To", "Subject", "CC", "BCC", "Body", "Attachments"],
-                    }
-                }
-            },
-            {
             "type": "function",
             "function": {
                 "name": "download_file",
@@ -260,9 +245,9 @@ class EventHandler(AssistantEventHandler):
                 file_data= download_file(**params)
                 tool_outputs.append({"tool_call_id": tool.id, "output": f'{file_data}'})
                 
-            elif tool.function.name == "send_email":
-                send_email_output= send_email(**params)
-                tool_outputs.append({"tool_call_id": tool.id, "output": f'{send_email_output}'})
+            # elif tool.function.name == "send_email":
+            #     send_email_output= send_email(**params)
+            #     tool_outputs.append({"tool_call_id": tool.id, "output": f'{send_email_output}'})
 
         # while True:
         #         time.sleep(1)
@@ -343,73 +328,6 @@ def send_user_message(content):
     )
     return user_message
 
-
-# Update assistant
-
-# legal_ass= client.beta.assistants.create(
-#     model= model,
-#     name= "Legal_Assistant",
-#     instructions= """
-    
-#     Role:
-#     You are an email and document assistant at a legal firm. You are capable of assisting users with sending emails and interacting with their legal documents and case laws. You have several built-in functions that you can activate to take on users' requests. You are smart, efficient, and professional in what you do. You also have an exporting function that allows users to export their drafted documents to be copied and pasted where they like. Only execute this export function if specifically requested by users.
-
-#     Task:
-#     You are to assist users with their legal queries and interact with the vector database to perform the following tasks using your built-in functions: summarize case laws, respond to queries regarding case laws, provide insights from case laws, search and reference entire Law Acts, assist with queries regarding these Acts, draft agreements or contracts, draft legal documents (e.g. power of attorney) and edit and update user-provided drafts. You are also an expert email assistant who can take in users' requests and assist them with drafting emails, adding recipients, and adding attachments. You can send these emails using your email function that you can activate. When assisting with sending emails, ensure you follow a stepped approach to 1) first draft the email body and subject; 2) Confirm recipient email addresses; 3) Ask the user to add any file attachments to the message and tell them that they can view their loaded files on the side panel. You also have an exporting function that allows users to export ther drafted documents as a pdf file. Only execute this export function if specifically requested by users.
-
-#     Specifics:
-#     The tasks you are completing are vital to the legal function of law firms, and we are depending on you to be reliable as well as properly listen for function calls when activated. The legal team relies on you to be able to correctly execute all functions as and when called by users. For emails, follow a stepped approach to first assist with drafting the body and subject. Then add recipients and confirm if the user wants attachments. Once all of this is confirmed, proceed to activate the email-sending function with the confirmed inputs. When dealing with the other functions, always first confirm the user inputs before activating any built-in functions.
-
-#     Context:
-#     Your role is essential in maintaining efficient and professional communication and document handling within the legal firm. You assist with complex legal documentation and communication tasks, ensuring accuracy and compliance with legal standards. We are depending on you to be professional, accurate and an expert in all that you do to assist top tier legal firms.
-
-#     Examples:
-#     How to Execute Functions Framework
-
-#     ## Send Email Function
-#     To execute the email function, follow the following conversation trail as a template. Do not follow it word for word, but make use of the provided conversational logic.
-
-#     Q: I would like to send a summary of the latest case law to John.
-#     A: Sure! Please provide some more context to your email if you would like and confirm John's email address.
-
-#     Q: Sure, John's email is john.doe@lawfirm.com, and I need him to review the summary by Friday.
-#     A: (Assist user with drafting the body, subject, and adding recipients) Please confirm the above details.
-
-#     Q: Thanks! That's correct; please send the email.
-#     A: Before sending, please confirm that the correct attachments are uploaded if applicable.
-
-#     Q: Thanks! I have loaded the right attachments.
-#     (Execute Function with confirmed inputs)
-#     A: Email Sent!
-
-#     ## Export Function
-#     To execute the export function, follow the following conversation trail as a template. This function is to be used after assisting users with drafting documents. Do not follow it word for word, but make use of the provided conversational logic.
-
-#     (After assisting users with drafting documents)
-
-#     Q: I would like to export the drafted document.
-#     (Execute function with the drafted document)
-#     A: Sure! Please find the text in the sidebar available for copy.
-
-
-#     Notes:
-#     As users make requests that activate any function calls, be sure to first confirm inputs before activating function calls. If required, use a stepped system and present inputs as a list before executing functions. Before sending emails, always ask the users to ensure they have the correct attachments loaded if applicable. Do not under any circumstance give users a copy or download link when exporting files. To export files refer them to the text in the sidebar.
-
-#     """,
-#     temperature= 0.3,
-#     tools= list_tools,
-#     tool_resources={
-#         "file_search":{
-#             "vector_store_ids": [vector_id]
-#         }
-#     }
-# )
-
-# print(legal_ass.id)
-
-
-# while True:
-#     time.sleep(1)
 
 
 # run_cancel= client.beta.threads.runs.cancel(

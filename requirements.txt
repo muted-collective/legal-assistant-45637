@@ -4,3 +4,4 @@ streamlit
 streamlit_authenticator
 reportlab
 cryptography
+firebase-admin

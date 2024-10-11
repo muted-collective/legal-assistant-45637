@@ -17,12 +17,6 @@ from firebase_admin import credentials, firestore
 
 load_dotenv()
 
-# Test Keys
-# OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-# VECTOR_STORE_ID = os.getenv('VECTOR_STORE_ID')
-# ASSISTANT_ID = os.getenv('ASSISTANT_ID')
-# SERVICE_ACCOUNT= os.getenv('BASE64_SERVICE_KEY')
-
 
 # Hidden Keys
 
@@ -55,51 +49,6 @@ OPENAI_API_KEY= decrypted_secrets['OPENAI_API_KEY']
 VECTOR_STORE_ID= decrypted_secrets['VECTOR_STORE_ID']
 ASSISTANT_ID= decrypted_secrets['ASSISTANT_ID']
 SERVICE_ACCOUNT= decrypted_secrets['SERVICE_ACCOUNT']
-
-
-# str_service= r'C:\Users\dkdra\Downloads\binda-attorneys-firebase-adminsdk-jpfe8-115f4904bf.json'
-
-# Read the service account key file as bytes
-# with open(str_service, 'rb') as f:
-#     key_bytes = f.read()
-
-# # Encode the bytes to Base64
-# base64_key = base64.b64encode(key_bytes).decode('utf-8')
-
-# # Output the Base64 string (set this as your environment variable)
-# print(base64_key)
-
-
-# print(service_account_info)
-
-# print(SERVICE_ACCOUNT)
-# print(type(SERVICE_ACCOUNT))
-
-# # Check if the key is available
-# if not SERVICE_ACCOUNT:
-#     raise ValueError("Service account key not found in environment variables.")
-
-
-# # Convert the JSON string to a dictionary
-# service_account_info = json.loads(SERVICE_ACCOUNT)
-
-
-# Path to key
-
-# path= "binda-attorneys-firebase-adminsdk-jpfe8-115f4904bf.json"
-
-# with open(path,"r") as key:
-
-#     service_key= json.load(key)
-#     print(service_key)
-
-    
-
-# # Encode the bytes to Base64
-# base64_key = base64.b64encode(service_key).decode('utf-8')
-
-# # Output the Base64 string (set this as your environment variable)
-# print(base64_key)
 
 
 if not SERVICE_ACCOUNT:

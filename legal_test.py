@@ -22,11 +22,9 @@ load_dotenv()
 # cipher_suite = Fernet(encryption_key.encode())
 
 
-OPENAI_API_KEY= os.getenv('OPENAI_API_KEY')
-VECTOR_STORE_ID= os.getenv('VECTOR_STORE_ID')
-ASSISTANT_ID= os.getenv('ASSISTANT_ID')
-EMAIL_SENDER= os.getenv('EMAIL_SENDER')
-EMAIL_PASSWORD= os.getenv('EMAIL_PASSWORD')
+OPENAI_API_KEY= os.getenv('OPENAI_API_KEY_raw')
+VECTOR_STORE_ID= os.getenv('VECTOR_STORE_ID_raw')
+ASSISTANT_ID= os.getenv('ASSISTANT_ID_raw')
 
 
 # encrypted_secrets= {
@@ -93,81 +91,6 @@ def write_file(file):
         f.write(file.getbuffer())
 
     return f'{file.name}'
-
-
-def send_email(To, CC, BCC, Subject, Body, Attachments): 
-
-
-    email_to= To.split(',')
-    email_to_cc= CC.split(',')
-    email_to_bcc= BCC.split(',')
-    email_to_subject= Subject
-    email_to_body= f""" {Body} """
-
-    email_sender= EMAIL_SENDER
-    email_password= EMAIL_PASSWORD
-
-    print(email_sender)
-    print(email_password)
-
-    if not email_password:
-        raise ValueError('EMAIL_PASSWORD environment variable not set')
-
-    all_recipients= email_to + email_to_cc + email_to_bcc
-
-    print(all_recipients)
-    print(type(all_recipients))
-
-    msg= MIMEMultipart()
-    msg['From']= formataddr(("Andile Vilakazi", f"{email_sender}"))
-    msg['To']= ", ".join(email_to)
-    msg['Cc']= ", ".join(email_to_cc)
-    msg['Bcc']= ", ".join(email_to_bcc)
-    msg['Subject']= email_to_subject
-
-
-    # Attach body text
-    part_1= MIMEText(email_to_body, "plain")   
-    msg.attach(part_1)
-
-
-    if Attachments == 'True':
-
-        for file in st.session_state.file_uploader:
-
-            copy_file= write_file(file)
-
-            with open(copy_file, "rb") as f:
-                
-                part= MIMEApplication(f.read(), Name= os.path.basename(copy_file))
-                part['Content-Disposition']= f'attachment; filename= "{os.path.basename(copy_file)}"'.format(basename(copy_file))
-        
-                # Attach files
-                msg.attach(part)
-
-            if os.path.exists(copy_file):
-                os.remove(copy_file)
-
-
-    smtp_server= 'smtp.bindaattorneys.co.za'
-    smtp_port= 25
-    context= ssl.create_default_context()
-
-    try:
-
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls(context=context)
-            server.login(email_sender, email_password)
-            server.sendmail(from_addr= email_sender, to_addrs= all_recipients, msg= msg.as_string())
-
-            success_message= f'Email succesfully sent to {all_recipients}'
-
-    except Exception as e:
-        success_message= f'Failure to send email: {e}'
-
-    print(success_message)
-
-    return success_message
 
 
 # Export text file
@@ -244,10 +167,7 @@ class EventHandler(AssistantEventHandler):
                 file_data= download_file(**params)
                 tool_outputs.append({"tool_call_id": tool.id, "output": f'{file_data}'})
                 
-            elif tool.function.name == "send_email":
-                send_email_output= send_email(**params)
-                tool_outputs.append({"tool_call_id": tool.id, "output": f'{send_email_output}'})
-
+                
         # while True:
         #         time.sleep(1)
 
@@ -276,19 +196,19 @@ class EventHandler(AssistantEventHandler):
 
 instructions= """
     
-    Role:
-    You are a document assistant at a legal firm. You are capable of assisting users with drafting emails and interacting with their legal documents and case laws. You have a built-in function that you can activate to take on users' requests to export data. You are smart, efficient, and professional in what you do. You also have an exporting function that allows users to export their drafted documents to be copied and pasted where they like. Only execute this export function if specifically requested by users.
+    # Role:
+    You are a document assistant at a legal firm. You are capable of assisting users with drafting documents and interacting with their legal documents and case laws. You have a built-in function that you can activate to take on users' requests to export data. You are smart, efficient, and professional in what you do. You also have an exporting function that allows users to export their drafted documents to be copied and pasted where they like. Only execute this export function if specifically requested by users.
 
-    Task:
-    You are to assist users with their legal queries and interact with the vector database to perform the following tasks using your built-in functions: summarize case laws, respond to queries regarding case laws, provide insights from case laws, search and reference entire Law Acts, assist with queries regarding these Acts, draft agreements or contracts, draft legal documents (e.g. power of attorney) and edit and update user-provided drafts. You are also an expert email assistant who can take in users' requests and assist them with drafting emails, adding recipients, and adding attachments. You can send these emails using your email function that you can activate. When assisting with sending emails, ensure you follow a stepped approach to 1) first draft the email body and subject; 2) Always ask the user who they should title the email as and what their farewell messsage should be, when drafting always add in a suggestion and change it as prompted by users. You also have an exporting function that allows users to export ther drafted documents to the sidebar. Only execute this export function if specifically requested by users.
+    # Task:
+    You are to assist users with their legal queries and interact with the vector database to perform the following tasks using your built-in functions: summarize case laws, respond to queries regarding case laws, provide insights from case laws, search and reference entire Law Acts, assist with queries regarding these Acts, draft agreements or contracts, draft legal documents (e.g. power of attorney, letter of demand, memorandum of incoporation) and edit and update user-provided drafts. You also have an exporting function that allows users to export ther drafted documents to the sidebar. Only execute this export function if specifically requested by users.
 
-    Specifics:
+    # Specifics:
     The tasks you are completing are vital to the legal function of law firms, and we are depending on you to be reliable as well as properly listen for function calls when activated. You are also to pay attention to the legal writing style and try to emulate the writing style in the examples shared with you. It is paramount for you to mirror the legal writing style of the user you are assisting. The legal team relies on you to be able to correctly execute all the tasks that a high end legal assistant will have assigned to them.
 
-    Context:
+    # Context:
     Your role is essential in maintaining efficient and professional communication and document handling within the legal firm. You assist with complex legal documentation and communication tasks, ensuring accuracy and compliance with legal standards. We are depending on you to be professional, accurate and an expert in all that you do to assist top tier legal firms.
 
-    Examples:
+    # Examples:
     How to Execute Functions Framework
 
     ## Export Function
@@ -301,7 +221,7 @@ instructions= """
     A: Sure! Please find the text in the sidebar available for copy.
 
 
-    Notes:
+    # Notes:
     As users make requests that activate any function calls, be sure to first confirm inputs before activating function calls. If required, use a stepped system and present inputs as a list before executing functions.
 
     """
@@ -323,8 +243,8 @@ legal_ass= client.beta.assistants.update(
 print(legal_ass.id)
 
 
-while True:
-    time.sleep(1)
+# while True:
+#     time.sleep(1)
 
 
 

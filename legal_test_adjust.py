@@ -1,7 +1,7 @@
 import openai
 import streamlit as st
 from dotenv import load_dotenv
-import time
+import time, datetime
 import re
 import json
 from os.path import basename
@@ -238,8 +238,44 @@ def create_new_thread():
     save_thread(thread_id_new, [], thread_name="Untitled")
     return thread_id_new
 
-# Functions (Your existing functions remain unchanged)
-# ... [Your existing functions like send_email, download_file, etc.] ...
+
+def rename_untitled_threads():
+
+    # Query for docs named exactly "Untitled"
+    untitled_docs = list(
+        db.collection("threads").where("name", "==", "Untitled").stream()
+    )
+    
+    if not untitled_docs:
+        print("No untitled threads found.")
+        return
+    
+    # Keep a dictionary of counters keyed by date:
+
+    counters = {}
+    
+    for doc_snapshot in untitled_docs:
+        doc_id = doc_snapshot.id
+        
+        # Creation timestamp:
+
+        today_str = datetime.date.today().strftime("%Y-%m-%d")
+        
+        # Check if we already have a counter for today_str
+        if today_str not in counters:
+            counters[today_str] = 0
+        
+        # Increment the date-specific counter
+        counters[today_str] += 1
+        new_number = counters[today_str]
+
+        # Build a new name
+        new_name = f"Untitled_{today_str}_#{new_number}"
+        
+        # Update Firestore
+        db.collection("threads").document(doc_id).update({"name": new_name})
+    
+
 
 # Functions
 

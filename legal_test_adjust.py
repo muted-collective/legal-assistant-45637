@@ -236,6 +236,7 @@ def create_new_thread():
 
     # Initialize the conversation history for the new thread
     save_thread(thread_id_new, [], thread_name="Untitled")
+    rename_untitled_threads()
     return thread_id_new
 
 
